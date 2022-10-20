@@ -1,0 +1,58 @@
+Before submitting this file, make sure that there are no more TODO
+placeholders remaining in the file (and remove this comment too).
+
+Perfect Numbers
+---------------
+
+Before submitting this file, make sure that there are no more TODO
+placeholders remaining in the file (and remove this comment too).
+
+Q1. Roughly how long did it take your computer to do the search? How many perfect numbers were found and what were they?
+A1. It took 1.18s for size of 40000. Four perfect number were found,which include 6, 28, 496, and 8128.
+
+Q2. Record the timing results for `findPerfects` that you observed into a table.
+A2. See `findPrefects_time_count.csv` and `findPrefects_time_count.png` for more details.
+
+Q3. Does it take the same amount of work to compute `isPerfect` on the number 10 as it does on the number 1000? Why or why not?
+    Does it take the same amount of work for `findPerfects` to search the range of numbers from 1-1000 as it does to search the numbers from 1000-2000? Why or why not?
+A3. It takes more amount of work to compute `isPerfect` on the number 10 as it does on the number 1000 because the compute burden of `divisorSum` function increase with the number.
+    It takes less amount of work for `findPerfects` to search the range of numbers from 1-1000 as it does to search the numbers from 1000-2000 since the `isPerfect` takes less time.
+
+Q4. Extrapolate from the data you gathered and make a prediction: how long will it take `findPerfects` to reach the fifth perfect number?
+A4. 675375s
+
+Q5. Do any of the tests still pass even with this broken function? Why or why not?
+A5. The tests expected to be false (like EXPECT(!isPerfect(0));) passed even with broken function since they also failed in this situation. The time test passed also because it donot test the correctness of the function.  
+
+Q6. Describe the testing strategy you used for your test cases to confirm `smarterSum` is working correctly.
+A6. equal test (1,6,25,36) 
+
+Q7. Record your timing results for `findPerfectsSmarter` into a table.
+A7. See `findPerfectsSmarter_time_count.csv` and `findPerfectsSmarter_time_count.png` for more details.
+
+Q8. Make a prediction: how long will `findPerfectsSmarter` take to reach the fifth perfect number?
+A8. 971s
+
+Q9. Explain how you chose your specific test cases and why they lead you to be confident `findNthPerfectEuclid` is working correctly.
+A9. It takes less than 0.01s to get 5th perfect number!
+test 1:  arithmetic test to see the algorithm works or not.
+test 2:  check the `findNthPerfectEuclid` works as expect with the help of perfect number list
+test 3:  edge test to see the `findNthPerfectEuclid` works with unexpected input 0 and negative
+test 4:  stress test see how much time needed to get get 5th perfect number!
+
+Soundex
+-------
+
+Q10. What is the Soundex code for "Angelou"? What is the code for your own surname?
+A10. TODO
+
+Q11. Before writing any code, brainstorm your plan of attack and sketch how you might decompose the work into smaller tasks. Briefly describe your decomposition strategy.
+A11. TODO
+
+Q12. Think about one or more examples of a class of names that the Soundex system might not work well for. Explain what this class of names is and why the system might incorrectly group them or mis-categorize one of the names.
+A12. TODO
+
+Q13. Suppose you are a software engineer working for the U.S. government. You have been tasked with implementing a system that collects names as part of the Census survey and analyzes these names using a phonetic algorithm. Your boss suggests using Soundex and notes that the algorithm is only expected to work for ASCII-encoded strings, since supporting Unicode would require extra work and time. What would your response be and why? What representational harms might result from building a system that exclusively uses Soundex and/or ASCII?
+A13. TODO
+
+
