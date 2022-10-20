@@ -1,8 +1,7 @@
-/*
- * TODO: remove and replace this file header comment
- * This is a .cpp file you will edit and turn in.
- * Remove starter comments and add your own
- * comments on each function and on complex code sections.
+/**
+ * @file: soundex.cpp
+ * @author: jianfei.zhao
+ * @description: Surname code retrieval program(Soundex system proposed by Margaret O'Dell and Robert C. Russell)
  */
 #include "testing/SimpleTest.h"
 #include "strlib.h"
@@ -12,75 +11,153 @@
 #include <cctype>
 #include <string>
 #include "vector.h"
+#include "map.h"
 using namespace std;
 
 /* This function is intended to return a string which
- * contains only the letter characters from the original
+ * contains only the letter characters (capitalized) from the original
  * (all non-letter characters are removed)
  *
- * WARNING: The provided code is buggy!
- *
- * Use unit tests to identify which inputs to this function
- * are incorrectly handled. Then, remove this comment and
- * replace it with a description of the bug you fixed.
+ * if string s is empty, s[0] would access to nothing
+ * if the first char is not Letter, result will not be initialize properly
+ * --initialize result with empty and let i start from 0
  */
-string removeNonLetters(string s) {
-    string result = charToString(s[0]);
-    for (int i = 1; i < s.length(); i++) {
+string remove_non_letters(string s) {
+    string result = "";
+    for (int i = 0; i < s.length(); i++) {
         if (isalpha(s[i])) {
-            result += s[i];
+            result += toupper(s[i]);
         }
     }
     return result;
 }
 
+/* This function is intended to convert a string (capitalized and all letter)
+ * to soudex encode system in number
+ */
+string encode_processed_string(string s){
+    Map<char,char> encode_map={{'A','0'},{'E','0'},{'I','0'},{'O','0'},{'U','0'},{'H','0'},{'W','0'},{'Y','0'}
+                              ,{'B','1'},{'F','1'},{'V','1'},{'P','1'}
+                              ,{'C','2'},{'G','2'},{'J','2'},{'K','2'},{'Q','2'},{'S','2'},{'X','2'},{'Z','2'}
+                              ,{'D','3'},{'T','3'}
+                              ,{'L','4'}
+                              ,{'M','5'},{'N','5'}
+                              ,{'R','6'}
+                              };
+    string result = "";
+    for (int i = 0; i < s.length(); i++) {
+        result += encode_map.get(s[i]);
+    }
+    return result;
+}
 
-/* TODO: Replace this comment with a descriptive function
- * header comment.
+/* Merge adjacent duplicate numbers
+ */
+string merge_adjacent_duplicate_numbers(string s){
+    string result="";
+    for (int i = 0; i < s.length(); i++) {
+        if(i>=1){
+            if(s[i]!=result.at(result.size()-1)){
+                result+=s[i];
+            }
+        }else{
+            result+=s[i];
+        }
+    }
+    return result;
+}
+
+/* fill with 0 or extract string to the size of 4
+ */
+string fill_extract_string_to_size_of_4(string s){
+    string result=s.substr(0,4);
+    int string_size=result.size();
+    if(string_size<4){
+        for(int i=0;i<4-string_size;i++){
+            result+='0';
+        }
+    }
+    return result;
+}
+
+/* This function is intended to return a encode(soudex system) with input `s`
  */
 string soundex(string s) {
-    /* TODO: Fill in this function. */
-    return "";
+    //1. remove extra character that cannot be encoded and make all letter capitalized(mark as processed_input)
+    string processed_input= remove_non_letters(s);
+    //2. generate encode table with specific data structure(like dict in python)
+    //3. repalace all character in the input string with encode table
+    string encode=encode_processed_string(processed_input);
+    //4. Merge adjacent duplicate numbers in the encode
+    encode=merge_adjacent_duplicate_numbers(encode);
+    //5. repalce first char in encode with the first char of processed_input  (make the first letter capitalized instead of step 1 seems make program faster )'
+    if(encode.size()>0){
+        encode[0]=processed_input[0];
+    }
+    //6. remove all 0 in encode
+    encode=stringReplace(encode,"0","");
+    //7. fill or extract the encode to make the length is 4
+    encode= fill_extract_string_to_size_of_4(encode);
+    return encode;
 }
 
 
-/* TODO: Replace this comment with a descriptive function
- * header comment.
+/* calculate the Soundex encoding of input, and then find all last names with the same encoding in the database
+ * the input filepath is the file path of database file
  */
 void soundexSearch(string filepath) {
-    // The proivded code opens the file with the given name
-    // and then reads the lines of that file into a vector.
     ifstream in;
     Vector<string> databaseNames;
 
     if (openFile(in, filepath)) {
         readEntireFile(in, databaseNames);
     }
-    cout << "Read file " << filepath << ", "
-         << databaseNames.size() << " names found." << endl;
-
-    // The names in the database are now stored in the provided
-    // vector named databaseNames
-
-    /* TODO: Fill in the remainder of this function. */
+    cout << "Read file " << filepath << ", "<< databaseNames.size() << " names found." << endl;
+    bool process_next=true;
+    while(process_next){
+        string surname = getLine("Enter a surname (RETURN to quit): ");
+        if(surname.size()==0){
+            process_next=false;
+        }else{
+            string encode=soundex(surname);
+            cout << "Soundex code is "  << encode << endl;
+            Vector<string> matches;
+            for(string item:databaseNames){
+                if(equalsIgnoreCase(encode,soundex(item))){
+                    matches.add(item);
+                }
+            }
+            matches.sort();
+            cout << "Matches from database:"  << matches << endl;
+        }
+    }
+    cout << "All done!"  ;
 }
 
 
 /* * * * * * Test Cases * * * * * */
 
-
 PROVIDED_TEST("Test removing puntuation, digits, and spaces") {
     string s = "O'Hara";
-    string result = removeNonLetters(s);
-    EXPECT_EQUAL(result, "OHara");
+    string result = remove_non_letters(s);
+    EXPECT_EQUAL(result, "OHARA");
     s = "Planet9";
-    result = removeNonLetters(s);
-    EXPECT_EQUAL(result, "Planet");
+    result = remove_non_letters(s);
+    EXPECT_EQUAL(result, "PLANET");
     s = "tl dr";
-    result = removeNonLetters(s);
-    EXPECT_EQUAL(result, "tldr");
+    result = remove_non_letters(s);
+    EXPECT_EQUAL(result, "TLDR");
+    s = "";
+    result = remove_non_letters(s);
+    //failed at here
+    EXPECT_EQUAL(result, "");
+    s = "Am0s";
+    result = remove_non_letters(s);
+    EXPECT_EQUAL(result, "AMS");
+    s = "0000";
+    result = remove_non_letters(s);
+    EXPECT_EQUAL(result, "");
 }
-
 
 PROVIDED_TEST("Sample inputs from handout") {
     EXPECT_EQUAL(soundex("Curie"), "C600");
@@ -133,6 +210,31 @@ PROVIDED_TEST("Ashcraft is not a special case") {
     EXPECT_EQUAL(soundex("Ashcraft"), "A226");
 }
 
-// TODO: add your test cases here
+STUDENT_TEST("Test encode_processed_string") {
+    string s="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    string result = encode_processed_string(s);
+    EXPECT_EQUAL(result, "01230120022455012623010202");
+}
+
+STUDENT_TEST("Test merge_adjacent_duplicate_numbers") {
+    EXPECT(equalsIgnoreCase(merge_adjacent_duplicate_numbers("1003"),  "103"));
+    EXPECT(equalsIgnoreCase(merge_adjacent_duplicate_numbers("0000"),  "0"));
+}
+
+STUDENT_TEST("Test fill_extract_string_to_size_of_4") {
+    string s="AMOS";
+    string result = fill_extract_string_to_size_of_4(s);
+    EXPECT_EQUAL(result, "AMOS");
+    s="";
+    result = fill_extract_string_to_size_of_4(s);
+    EXPECT_EQUAL(result, "0000");
+    s="AMMMMMOS";
+    result = fill_extract_string_to_size_of_4(s);
+    EXPECT_EQUAL(result, "AMMM");
+    s="A";
+    result = fill_extract_string_to_size_of_4(s);
+    EXPECT_EQUAL(result, "A000");
+}
+
 
 

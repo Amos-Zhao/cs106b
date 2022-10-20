@@ -44,10 +44,17 @@ Soundex
 -------
 
 Q10. What is the Soundex code for "Angelou"? What is the code for your own surname?
-A10. TODO
+A10. A524
 
 Q11. Before writing any code, brainstorm your plan of attack and sketch how you might decompose the work into smaller tasks. Briefly describe your decomposition strategy.
-A11. TODO
+A11.
+1. remove extra character that cannot be encoded(mark as processed_input)
+2. generate encode table with specific data structure(like dict in python)
+3. repalace all character in the input string with encode table
+4. remove near duplitcate number in the encode
+5. repalce first char in encode with the first char of processed_input  (make the first letter capitalized instead of step 1 seems make program faster )
+6. remove all 0 in encode
+7. fill or extract the encode to make the length is 4
 
 Q12. Think about one or more examples of a class of names that the Soundex system might not work well for. Explain what this class of names is and why the system might incorrectly group them or mis-categorize one of the names.
 A12. TODO
