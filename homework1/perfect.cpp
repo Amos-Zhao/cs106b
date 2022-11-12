@@ -112,18 +112,16 @@ void findPerfectsSmarter(long stop) {
 long findNthPerfectEuclid(long n) {
     int count_prefect_number=0;
     int k=1;
-    long result=0;
     long m=0;
     while( count_prefect_number<n){
         m=pow(2,k)-1;
         if(smarterSum(m)==1){
             // is prefect number
-            result=(pow(2,k)-1)*(pow(2,k-1));
             count_prefect_number++;
         }
         k++;
     }
-    return result;
+    return (pow(2,k-1)-1)*(pow(2,k-2));;
 }
 
 
